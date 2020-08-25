@@ -22,6 +22,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    dataBinding{
+        enabled = true
+    }
 }
 
 dependencies {
@@ -35,9 +39,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-
-    //For permisssions
-    implementation 'com.karumi:dexter:5.0.0'
 
 
     // Coroutines for getting off the UI thread
@@ -54,7 +55,7 @@ dependencies {
     implementation "com.squareup.moshi:moshi-kotlin:1.8.0"
 
     // Room database
-    implementation "androidx.room:room-runtime:2.2.5"
+    implementation "androidx.room:room-ktx:2.2.5"
     kapt "androidx.room:room-compiler:2.2.5"
 
     // Koin Dependency injection
