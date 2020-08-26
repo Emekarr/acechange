@@ -1,34 +1,40 @@
 package com.example.aceexchangerateapp.screens.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
-import com.example.aceexchangerateapp.database.CurrencyEntity
 import com.example.aceexchangerateapp.repository.AppRepository
 import com.example.aceexchangerateapp.screens.recyclerview.RecyclerViewObject
 
-class RatesFragmentViewModel(private val appRepository: AppRepository): ViewModel() {
+class RatesFragmentViewModel(private val appRepository: AppRepository) : ViewModel() {
 
     val recyclerList = MutableLiveData<List<RecyclerViewObject>>()
+    val baseCurrency = MutableLiveData<String>()
 
     init {
-        getAndObserveRecyclerListFromRepo()
+        getAndObserveRecyclerListAndBaseCurrencyFromRepo()
     }
 
-    fun getAllRates(){
+    fun getAllRates() {
         appRepository.getAllRates()
     }
 
-    private fun getAndObserveRecyclerListFromRepo(){
-        val observer = Observer<List<RecyclerViewObject>>{
+    private fun getAndObserveRecyclerListAndBaseCurrencyFromRepo() {
+        val recyclerViewObserver = Observer<List<RecyclerViewObject>> {
             recyclerList.value = it
         }
-        appRepository.recyclerList.observeForever(observer)
+        appRepository.recyclerList.observeForever(recyclerViewObserver)
+
+        val baseCurrencyObserver = Observer<String> {
+            baseCurrency.value = it
+            Log.i("test", "base currency vm" + it )
+        }
+        appRepository.baseCurrency.observeForever(baseCurrencyObserver)
     }
 
-    fun getCachedRates(){
+    fun getCachedRates() {
         appRepository.getCachedRates()
     }
-
 
 }

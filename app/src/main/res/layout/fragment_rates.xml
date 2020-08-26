@@ -3,6 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="ratesFragmentViewModel"
+            type="com.example.aceexchangerateapp.screens.viewmodels.RatesFragmentViewModel" />
+    </data>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -32,6 +39,18 @@
 
             </com.google.android.material.appbar.AppBarLayout>
 
+            <TextView
+                android:id="@+id/baseCurrency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{ratesFragmentViewModel.baseCurrency}"
+                android:textColor="#121212"
+                android:textSize="19sp"
+                app:layout_constraintBottom_toTopOf="@id/swipeToRefresh"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="20dp"
+                app:layout_constraintTop_toBottomOf="@id/appbar" />
+
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/swipeToRefresh"
                 android:layout_width="0dp"
@@ -39,20 +58,17 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/appbar">
+                app:layout_constraintTop_toBottomOf="@id/baseCurrency">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:overScrollMode="never"
                     android:padding="10dp"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    tools:listitem="@layout/rates_recycler_card_grid"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:spanCount="2"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/appbar" />
+                    tools:listitem="@layout/rates_recycler_card_grid" />
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

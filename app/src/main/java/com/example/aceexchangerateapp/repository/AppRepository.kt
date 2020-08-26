@@ -18,8 +18,8 @@ import kotlin.reflect.full.memberProperties
 
 //repository
 class AppRepository(
-    private val currencyDatabaseCompanion: CurrencyDatabase.Companion,
-    private val androidContext: Context
+    currencyDatabaseCompanion: CurrencyDatabase.Companion,
+    androidContext: Context
 ) {
     private val currencyDatabase = currencyDatabaseCompanion.getInstance(androidContext)
     private val retrofitApi = Retrofit.retrofitApi
@@ -31,10 +31,15 @@ class AppRepository(
     val recyclerList: LiveData<List<RecyclerViewObject>> = Transformations.map(currencyList){
         it.transformToRecyclerViewObject()
     }
+    val baseCurrency = MutableLiveData<String>()
+
 
     fun getAllRates() {
         ioScope.launch {
             val exchangeDto = retrofitApi.getAllRates().await()
+            withContext(Main){
+                baseCurrency.value = exchangeDto.base
+            }
             getDataFromExchangeDto(exchangeDto)
         }
     }
@@ -53,6 +58,7 @@ class AppRepository(
             withContext(Main){
                 getCachedRates()
             }
+            job.cancel()
         }
     }
 
