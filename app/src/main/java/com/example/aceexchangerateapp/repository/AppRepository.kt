@@ -24,41 +24,50 @@ class AppRepository(
     private val currencyDatabase = currencyDatabaseCompanion.getInstance(androidContext)
     private val retrofitApi = Retrofit.retrofitApi
 
-    private val job = Job()
-    private val ioScope = CoroutineScope(Dispatchers.IO + job)
-
     private val currencyList = MutableLiveData<List<CurrencyEntity>>()
-    val recyclerList: LiveData<List<RecyclerViewObject>> = Transformations.map(currencyList){
+    val recyclerList: LiveData<List<RecyclerViewObject>> = Transformations.map(currencyList) {
         it.transformToRecyclerViewObject()
     }
+
+    val job = Job()
+    val ioScope = CoroutineScope(Dispatchers.IO + job)
     val baseCurrency = MutableLiveData<String>()
 
 
-    fun getAllRates() {
+    fun getAllRates(baseCurrencyCall: String) {
+        Log.i("test", "get all rates repo was called")
+
+
         ioScope.launch {
-            val exchangeDto = retrofitApi.getAllRates().await()
-            withContext(Main){
+            val exchangeDto = retrofitApi.getAllRates(baseCurrencyCall).await()
+            withContext(Main) {
                 baseCurrency.value = exchangeDto.base
             }
+
             getDataFromExchangeDto(exchangeDto)
         }
     }
 
     private fun getDataFromExchangeDto(exchangeDto: ExchangeDto) {
         val listOfExchangeRates = mutableListOf<CurrencyEntity>()
-        for (rate in ExchangeRates::class.memberProperties){
-            listOfExchangeRates.add(CurrencyEntity(currency  = rate.name, value = rate.get(exchangeDto.rates) as Float))
+        for (rate in ExchangeRates::class.memberProperties) {
+            rate.get(exchangeDto.rates)?.let {
+                listOfExchangeRates.add(CurrencyEntity(currency = rate.name, value = it as Float))
+            }
+            if (rate.get(exchangeDto.rates) == null) {
+                    Log.i("test",  rate.name + "is null")
+            }
         }
         cacheResults(listOfExchangeRates)
     }
 
     private fun cacheResults(listOfExchangeRates: MutableList<CurrencyEntity>) {
+
         ioScope.launch {
             currencyDatabase.currencyDao().cacheResults(*listOfExchangeRates.toTypedArray())
-            withContext(Main){
+            withContext(Main) {
                 getCachedRates()
             }
-            job.cancel()
         }
     }
 
@@ -67,5 +76,7 @@ class AppRepository(
             currencyList.value = list
         }
     }
+
+
 
 }

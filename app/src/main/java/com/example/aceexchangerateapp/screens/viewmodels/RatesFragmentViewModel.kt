@@ -16,8 +16,9 @@ class RatesFragmentViewModel(private val appRepository: AppRepository) : ViewMod
         getAndObserveRecyclerListAndBaseCurrencyFromRepo()
     }
 
-    fun getAllRates() {
-        appRepository.getAllRates()
+    fun getAllRates(baseCurrencyCall: String) {
+        Log.i("test", "get all rates vm was called")
+        appRepository.getAllRates(baseCurrencyCall)
     }
 
     private fun getAndObserveRecyclerListAndBaseCurrencyFromRepo() {
@@ -28,7 +29,6 @@ class RatesFragmentViewModel(private val appRepository: AppRepository) : ViewMod
 
         val baseCurrencyObserver = Observer<String> {
             baseCurrency.value = it
-            Log.i("test", "base currency vm" + it )
         }
         appRepository.baseCurrency.observeForever(baseCurrencyObserver)
     }

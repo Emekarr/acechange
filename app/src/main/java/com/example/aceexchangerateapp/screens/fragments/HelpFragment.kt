@@ -30,8 +30,6 @@ class HelpFragment : Fragment() {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://instagram.com/emekarr")))
         }
 
-
-
         // Inflate the layout for this fragment
         return binding.root
     }

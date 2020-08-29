@@ -10,15 +10,11 @@
             type="com.example.aceexchangerateapp.screens.viewmodels.RatesFragmentViewModel" />
     </data>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        tools:context=".screens.fragments.RatesFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            tools:context=".screens.fragments.RatesFragment"
+            android:layout_height="match_parent">
 
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/appbar"
@@ -72,7 +68,17 @@
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <include layout="@layout/converter_bottomsheet" />
+
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </ScrollView>
 </layout>

@@ -9,6 +9,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 private const val BASE_URL = "https://api.exchangeratesapi.io/"
 
@@ -25,7 +26,7 @@ private val retrofit = Retrofit.Builder()
 //app api
 interface RetrofitApi {
     @GET("latest")
-    fun getAllRates(): Deferred<ExchangeDto>
+    fun getAllRates(@Query("base") baseCurrency: String): Deferred<ExchangeDto>
 }
 
 object Retrofit{
