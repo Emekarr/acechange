@@ -37,4 +37,15 @@ class RatesFragmentViewModel(private val appRepository: AppRepository) : ViewMod
         appRepository.getCachedRates()
     }
 
+    fun checkInternetAvailability(): Boolean {
+        return try {
+            val runtime = Runtime.getRuntime()
+            val ipProcess = runtime.exec("/system/bin/ping -c 1 " + "www.google.com")
+            val exitValue = ipProcess.waitFor()
+            exitValue == 0
+        } catch (e: Exception) {
+            false
+        }
+    }
+
 }

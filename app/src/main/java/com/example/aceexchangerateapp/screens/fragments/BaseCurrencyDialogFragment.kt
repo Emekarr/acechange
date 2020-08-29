@@ -31,10 +31,8 @@ class BaseCurrencyDialogFragment: DialogFragment() {
         binding.selectBaseCurrency.onItemClickListener =
             AdapterView.OnItemClickListener { parent, view, position, id ->
                 BaseCurrencyLiveData.baseCurrency.value = baseCurrencyList[position]
-                Log.i("test", BaseCurrencyLiveData.baseCurrency.value.toString())
+                this.dismiss()
             }
-
-
 
         return binding.root
     }

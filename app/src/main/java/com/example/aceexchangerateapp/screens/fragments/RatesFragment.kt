@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -27,6 +28,7 @@ import kotlinx.android.synthetic.main.converter_bottomsheet.view.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Main
 import org.koin.android.ext.android.get
+import java.io.IOException
 
 class RatesFragment : Fragment() {
     private val viewModel: RatesFragmentViewModel by lazy {
@@ -39,14 +41,13 @@ class RatesFragment : Fragment() {
         BottomSheetBehavior.from(converterBottomSheet)
     }
     private lateinit var binding: FragmentRatesBinding
-    private val isInternetAvailable = MutableLiveData<Boolean>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
-        checkInternetAvailability()
+        viewModel.checkInternetAvailability()
         observeIsInternetAvailable()
         onChangeOfBaseCurrency()
 
@@ -99,7 +100,7 @@ class RatesFragment : Fragment() {
                             )
                         )
                         bottomSheet.convertersheetHeader.setTextColor(
-                                Color.parseColor("#121212")
+                            Color.parseColor("#121212")
                         )
                     }
                     BottomSheetBehavior.STATE_DRAGGING -> {
@@ -115,30 +116,10 @@ class RatesFragment : Fragment() {
         })
     }
 
-    private fun onChangeOfBaseCurrency() {
-        BaseCurrencyLiveData.baseCurrency.observe(viewLifecycleOwner, Observer { currency ->
-            checkInternetAvailability()
-            isInternetAvailable.observe(viewLifecycleOwner, Observer {
-                if (it) {
-                    viewModel.getAllRates(BaseCurrencyLiveData.baseCurrency.value!!)
-                    baseCurrencyDialogFragment.dismiss()
-                } else {
-                    baseCurrencyDialogFragment.dismiss()
-                    Snackbar.make(
-                        requireView(),
-                        "Check your internet and try again",
-                        Snackbar.LENGTH_LONG
-                    ).show()
-                }
-            })
-        })
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpBottomSheet()
-
-
         val mainActivity = requireActivity() as AppCompatActivity
         mainActivity.setSupportActionBar(binding.toolbar)
     }
@@ -157,49 +138,34 @@ class RatesFragment : Fragment() {
         }
     }
 
-    private fun observeIsInternetAvailable() {
-        isInternetAvailable.observe(viewLifecycleOwner, Observer {
-            if (it) viewModel.getAllRates(BaseCurrencyLiveData.baseCurrency.value!!)
-            else viewModel.getCachedRates()
+    private fun onChangeOfBaseCurrency() {
+        BaseCurrencyLiveData.baseCurrency.observe(viewLifecycleOwner, Observer { currency ->
+            if (viewModel.checkInternetAvailability()) {
+                viewModel.getAllRates(currency)
+            } else {
+                Snackbar.make(
+                    requireView(),
+                    "Check your internet and try again",
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
         })
     }
 
-    private fun checkInternetAvailability() {
-        val job = Job()
-        val ioScope = CoroutineScope(Dispatchers.IO + job)
-
-        ioScope.launch {
-            try {
-                val runtime = Runtime.getRuntime()
-                val ipProcess = runtime.exec("/system/bin/ping -c 1 " + "www.google.com")
-                val exitValue = ipProcess.waitFor()
-                withContext(Main) {
-                    isInternetAvailable.value = exitValue == 0
-                }
-            } catch (e: Exception) {
-                withContext(Main) {
-                    isInternetAvailable.value = false
-                }
-            }
-            job.cancel()
-        }
+    private fun observeIsInternetAvailable() {
+        if (viewModel.checkInternetAvailability()) viewModel.getAllRates(BaseCurrencyLiveData.baseCurrency.value!!)
+        else viewModel.getCachedRates()
     }
 
 
     private fun swipeToRefreshList() {
         binding.swipeToRefresh.setOnRefreshListener {
-            checkInternetAvailability()
-            isInternetAvailable.observe(viewLifecycleOwner, Observer {
-                if (it) {
-                    viewModel.getAllRates(BaseCurrencyLiveData.baseCurrency.value!!)
-                } else {
-                    Snackbar.make(
-                        requireView(),
-                        "Check your internet and try again",
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-                }
-            })
+            if (viewModel.checkInternetAvailability()) viewModel.getAllRates(BaseCurrencyLiveData.baseCurrency.value!!)
+            else Snackbar.make(
+                requireView(),
+                "Check your internet and try again",
+                Snackbar.LENGTH_SHORT
+            ).show()
             binding.swipeToRefresh.isRefreshing = false
         }
     }
