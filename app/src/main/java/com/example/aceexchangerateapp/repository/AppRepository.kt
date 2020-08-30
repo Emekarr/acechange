@@ -29,51 +29,64 @@ class AppRepository(
         it.transformToRecyclerViewObject()
     }
 
-    val job = Job()
-    val ioScope = CoroutineScope(Dispatchers.IO + job)
+    val currencyToConvertList = MutableLiveData<List<CurrencyEntity>>()
+
+
     val baseCurrency = MutableLiveData<String>()
 
 
     fun getAllRates(baseCurrencyCall: String) {
-        Log.i("test", "get all rates repo was called")
-
+        val job = Job()
+        val ioScope = CoroutineScope(Dispatchers.IO + job)
 
         ioScope.launch {
             val exchangeDto = retrofitApi.getAllRates(baseCurrencyCall).await()
             withContext(Main) {
                 baseCurrency.value = exchangeDto.base
             }
-
-            getDataFromExchangeDto(exchangeDto)
+            getDataFromExchangeDto(exchangeDto, job)
         }
     }
 
-    private fun getDataFromExchangeDto(exchangeDto: ExchangeDto) {
+    private fun getDataFromExchangeDto(exchangeDto: ExchangeDto, job: Job) {
         val listOfExchangeRates = mutableListOf<CurrencyEntity>()
         for (rate in ExchangeRates::class.memberProperties) {
             rate.get(exchangeDto.rates)?.let {
                 listOfExchangeRates.add(CurrencyEntity(currency = rate.name, value = it as Float))
             }
-            if (rate.get(exchangeDto.rates) == null) {
-                    Log.i("test",  rate.name + "is null")
-            }
         }
+        job.cancel()
         cacheResults(listOfExchangeRates)
     }
 
     private fun cacheResults(listOfExchangeRates: MutableList<CurrencyEntity>) {
+        val job = Job()
+        val ioScope = CoroutineScope(Dispatchers.IO + job)
 
         ioScope.launch {
             currencyDatabase.currencyDao().cacheResults(*listOfExchangeRates.toTypedArray())
             withContext(Main) {
                 getCachedRates()
             }
+            job.cancel()
         }
     }
 
     fun getCachedRates() {
         currencyDatabase.currencyDao().getCache().observeForever { list ->
             currencyList.value = list
+        }
+    }
+
+    fun getCurrenciesToConvert(currency1: String, currency2: String){
+        val job = Job()
+        val ioScope = CoroutineScope(Dispatchers.IO + job)
+
+        ioScope.launch {
+            val result = currencyDatabase.currencyDao().getCurrenciesForConverting(currency1, currency2)
+            withContext(Main){
+                currencyToConvertList.value = result
+            }
         }
     }
 

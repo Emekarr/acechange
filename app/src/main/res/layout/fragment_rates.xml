@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="ratesFragmentViewModel"
-            type="com.example.aceexchangerateapp.screens.viewmodels.RatesFragmentViewModel" />
+            name="baseCurrencyLiveData"
+            type="com.example.aceexchangerateapp.networking.BaseCurrencyLiveData" />
     </data>
 
 
@@ -39,7 +39,7 @@
                 android:id="@+id/baseCurrency"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{ratesFragmentViewModel.baseCurrency}"
+                android:text="@{baseCurrencyLiveData.baseCurrency}"
                 android:textColor="#121212"
                 android:textSize="19sp"
                 app:layout_constraintBottom_toTopOf="@id/swipeToRefresh"

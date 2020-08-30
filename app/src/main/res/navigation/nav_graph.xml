@@ -22,13 +22,5 @@
         android:id="@+id/helpFragment"
         android:name="com.example.aceexchangerateapp.screens.fragments.HelpFragment"
         android:label="fragment_help"
-        tools:layout="@layout/fragment_help" >
-        <action
-            android:id="@+id/action_helpFragment_to_ratesFragment"
-            app:destination="@id/ratesFragment"
-            app:enterAnim="@anim/slide_in_left"
-            app:exitAnim="@anim/slide_out_right"
-            app:popUpTo="@id/helpFragment"
-            app:popUpToInclusive="true" />
-    </fragment>
+        tools:layout="@layout/fragment_help" />
 </navigation>

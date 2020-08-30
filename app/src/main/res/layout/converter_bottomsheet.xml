@@ -1,33 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="450dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/converterBottomSheet"
-    app:behavior_hideable="false"
-    app:cardCornerRadius="30dp"
-    app:cardBackgroundColor="@android:color/white"
+    android:layout_width="match_parent"
+    android:layout_height="400dp"
     android:layout_marginBottom="-30dp"
+    app:behavior_hideable="false"
     app:behavior_peekHeight="50dp"
-    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    app:cardBackgroundColor="#5901D6"
+    app:cardCornerRadius="30dp"
+    app:cardElevation="10dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:padding="10dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="10dp">
 
         <TextView
             android:id="@+id/convertersheetHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textColor="#121212"
-            app:layout_constraintTop_toTopOf="parent"
+            android:text="Slide up to convert"
+            android:textColor="@android:color/white"
+            android:textSize="21sp"
             app:layout_constraintStart_toStartOf="parent"
-            android:text="Slide up to convert" />
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/convertFrom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="convert from"
+            android:textColor="@android:color/white"
+            android:textSize="19sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/convertersheetHeader" />
+
+        <Spinner
+            android:id="@+id/convertFromSpinner"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="30dp"
+            app:layout_constraintBottom_toTopOf="@id/convertTo"
+            app:layout_constraintStart_toEndOf="@id/convertFrom"
+            app:layout_constraintTop_toBottomOf="@id/convertersheetHeader" />
+
+        <TextView
+            android:id="@+id/convertTo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="convert to"
+            android:textColor="@android:color/white"
+            android:textSize="19sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/convertFrom" />
+
+        <Spinner
+            android:id="@+id/convertToSpinner"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="30dp"
+            app:layout_constraintBottom_toTopOf="@id/convertButton"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintStart_toEndOf="@id/convertTo"
+            app:layout_constraintTop_toBottomOf="@id/convertFrom" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/convertButton"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPrimary"
+            app:cornerRadius="10dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/convertTo"
+            app:layout_constraintBottom_toTopOf="@id/convertedResult"
+            android:backgroundTint="@android:color/white"
+            android:text="convert" />
+
+
+        <TextView
+            android:id="@+id/convertedResult"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="120dp"
+            android:text="2.46379"
+            android:textColor="@android:color/white"
+            android:textSize="45sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/convertTo" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
 </com.google.android.material.card.MaterialCardView>

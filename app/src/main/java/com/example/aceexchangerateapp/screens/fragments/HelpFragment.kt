@@ -42,7 +42,7 @@ class HelpFragment : Fragment() {
         mainActivity.setSupportActionBar(binding.toolbar)
         mainActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.toolbar.setNavigationOnClickListener {
-            findNavController().navigate(R.id.action_helpFragment_to_ratesFragment)
+            mainActivity.onBackPressed()
         }
     }
 }

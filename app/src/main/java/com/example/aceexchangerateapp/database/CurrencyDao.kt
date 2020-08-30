@@ -13,4 +13,7 @@ interface CurrencyDao {
 
     @Query("SELECT * FROM currency_entity")
     fun getCache(): LiveData<List<CurrencyEntity>>
+
+    @Query("SELECT * FROM currency_entity WHERE currency = :currency1 OR currency = :currency2")
+    fun getCurrenciesForConverting(currency1: String, currency2: String): List<CurrencyEntity>
 }
