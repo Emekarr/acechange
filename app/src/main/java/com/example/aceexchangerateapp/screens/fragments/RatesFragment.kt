@@ -153,7 +153,9 @@ class RatesFragment : Fragment() {
         val ioScope = CoroutineScope((Dispatchers.IO + job))
         ioScope.launch {
             if (viewModel.checkInternetAvailability()) viewModel.getAllRates(BaseCurrencyLiveData.baseCurrency.value!!)
-            else viewModel.getCachedRates()
+            else withContext(Main){
+                viewModel.getCachedRates()
+            }
             job.cancel()
         }
     }
