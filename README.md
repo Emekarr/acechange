@@ -1,4 +1,6 @@
 # acechange
+Updated version of app Acechange2
+
 Acechange is an android app written in 100% Kotlin.
 It's an app that delivers exchange rates to it's users.
 Libraries used are
